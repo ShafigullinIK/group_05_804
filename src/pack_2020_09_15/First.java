@@ -43,8 +43,8 @@ public class First {
         }
 //        printArray(left);
 //        printArray(right);
-        mergeSort(left);
-        mergeSort(right);
+        left = mergeSort(left);
+        right = mergeSort(right);
         return merge(left, right);
     }
 
