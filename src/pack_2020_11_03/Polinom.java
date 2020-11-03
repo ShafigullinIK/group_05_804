@@ -1,4 +1,4 @@
-package pack_2020_10_20_milooq;
+package pack_2020_11_03;
 
 import java.util.ArrayList;
 public class Polinom {
@@ -127,3 +127,4 @@ public class Polinom {
         return str.toString();
     }
 }
+
