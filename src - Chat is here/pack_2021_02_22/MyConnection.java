@@ -2,6 +2,7 @@ package pack_2021_02_22;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class MyConnection implements Runnable {
 
@@ -15,18 +16,49 @@ public class MyConnection implements Runnable {
     private BufferedWriter writer;
     private Server server;
 
-    public MyConnection(Socket socket, Server server){
+    private String nickname = "Аноним";
+
+    public MyConnection(Socket socket, Server server) {
         this.socket = socket;
-        try{
+        try {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
 
         }
         this.server = server;
+        init(socket.getInetAddress().toString());
     }
 
-    public void sendMessage (String message) throws IOException {
+    public void init(String ip) {
+        HashMap<String, String> nicknames = server.nicknames;
+        if (nicknames.containsKey(ip)) {
+            nickname = nicknames.get(ip);
+            return;
+        } else {
+            try {
+                writer.write("Представьтесь пожалуйста :)");
+                writer.newLine();
+                writer.flush();
+                String newNickname = reader.readLine();
+                while (nicknames.containsValue(newNickname)){
+                    writer.write("Вы все врете! такой у нас есть :-p");
+                    writer.newLine();
+                    writer.flush();
+                    newNickname = reader.readLine();
+                }
+                nicknames.put(ip, newNickname);
+                nickname = newNickname;
+                writer.write("Приятного общения в нашем уютном чатике :)");
+                writer.newLine();
+                writer.flush();
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
+    public void sendMessage(String message) throws IOException {
         writer.write(message);
         writer.newLine();
         writer.flush();
@@ -35,10 +67,10 @@ public class MyConnection implements Runnable {
 
     @Override
     public void run() {
-        try{
+        try {
             String message = reader.readLine();
             while (!"exit".equals(message)) {
-                server.messageReceived(message);
+                server.messageReceived(nickname + ": " + message);
                 message = reader.readLine();
             }
         } catch (IOException e) {

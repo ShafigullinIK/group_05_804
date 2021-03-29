@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class Client {
 
-    static String name = "Товарищь преподаватель";
+//    static String name = "Товарищь преподаватель";
 
     public static void main(String[] args) {
         try (Socket socket = new Socket("192.168.43.180", 5555);) {
@@ -19,7 +19,7 @@ public class Client {
                     try{
                         String message = reader.readLine();
                         while (!"exit".equals(message)) {
-                            System.out.println("Сервер написал: " + message);
+                            System.out.println(message);
                             message = reader.readLine();
                         }
                     } catch (IOException e) {
@@ -30,10 +30,10 @@ public class Client {
             t.start();
             String myMessage = consoleReader.readLine();
             while (!"exit".equals(myMessage)) {
-                writer.write(name + ": " + myMessage);
+                writer.write(myMessage);
                 writer.newLine();
                 writer.flush();
-                System.out.println("Введите сообщение: ");
+//                System.out.println("Введите сообщение: ");
                 myMessage = consoleReader.readLine();
             }
             reader.close();
