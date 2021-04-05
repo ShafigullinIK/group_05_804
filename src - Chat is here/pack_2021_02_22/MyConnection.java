@@ -18,6 +18,7 @@ public class MyConnection implements Runnable {
 
     private String nickname = "Аноним";
 
+
     public MyConnection(Socket socket, Server server) {
         this.socket = socket;
         try {
@@ -41,13 +42,14 @@ public class MyConnection implements Runnable {
                 writer.newLine();
                 writer.flush();
                 String newNickname = reader.readLine();
-                while (nicknames.containsValue(newNickname)){
+                while (nicknames.containsValue(newNickname)) {
                     writer.write("Вы все врете! такой у нас есть :-p");
                     writer.newLine();
                     writer.flush();
                     newNickname = reader.readLine();
                 }
                 nicknames.put(ip, newNickname);
+                writeToFile(ip, newNickname);
                 nickname = newNickname;
                 writer.write("Приятного общения в нашем уютном чатике :)");
                 writer.newLine();
@@ -55,6 +57,16 @@ public class MyConnection implements Runnable {
             } catch (IOException e) {
 
             }
+        }
+    }
+
+    private void writeToFile(String ip, String newNickname) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(server.FILE_NAME), true))) {
+            writer.write(ip + server.DEVIDER + newNickname);
+            writer.newLine();
+            writer.flush();
+        } catch (IOException e) {
+
         }
     }
 
@@ -69,7 +81,7 @@ public class MyConnection implements Runnable {
     public void run() {
         try {
             String message = reader.readLine();
-            while (!"exit".equals(message)) {
+            while (message != null && !"exit".equals(message)) {
                 server.messageReceived(nickname + ": " + message);
                 message = reader.readLine();
             }

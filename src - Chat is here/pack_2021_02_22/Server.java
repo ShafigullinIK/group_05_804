@@ -11,11 +11,15 @@ public class Server {
     ArrayList<MyConnection> connections = new ArrayList<>();
     HashMap<String, String> nicknames = new HashMap<>();
 
+    static final String FILE_NAME = "users.txt";
+    static final String DEVIDER = " ~!~ ";
+
     public static void main(String[] args) {
         new Server().serverStart();
     }
 
     public void serverStart() {
+        initNicknames();
         try (ServerSocket server = new ServerSocket(5555);) {
             System.out.println("Сервер ожидает подключения");
             while (true) {
@@ -28,6 +32,18 @@ public class Server {
             }
         } catch (IOException e) {
             System.out.println("Проблемы с сервером");
+        }
+    }
+
+    private void initNicknames() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(FILE_NAME)))) {
+            while (reader.ready()) {
+                String line = reader.readLine();
+                String[] items = line.split(DEVIDER);
+                nicknames.put(items[0], items[1]);
+            }
+        } catch (IOException e) {
+
         }
     }
 

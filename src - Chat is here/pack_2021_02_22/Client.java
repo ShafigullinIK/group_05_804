@@ -27,6 +27,7 @@ public class Client {
                     }
                 }
             });
+            t.setDaemon(true);
             t.start();
             String myMessage = consoleReader.readLine();
             while (!"exit".equals(myMessage)) {
@@ -36,10 +37,14 @@ public class Client {
 //                System.out.println("Введите сообщение: ");
                 myMessage = consoleReader.readLine();
             }
-            reader.close();
+            System.out.println("Цикл завершён");
             writer.close();
+            System.out.println("writer завершён");
+            reader.close();
+            System.out.println("reader завершён");
         }catch (IOException e) {
             System.out.println("Не удается подключиться к серверу :(");
         }
+        System.out.println("Main завершается");
     }
 }
